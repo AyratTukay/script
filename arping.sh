@@ -16,9 +16,9 @@ if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root"
    exit 1
 fi
-[[ "$PREFIX" = "NOT_SET" ]] && { echo "\$PREFIX должен быть передан как первый позиционный аргумент"; exit 1; }
+[[ "$PREFIX" = "NOT_SET" ]] && { echo "\$PREFIX must be passed as first positional argument"; exit 1; }
 if [[ -z "$INTERFACE" ]]; then
-    echo "\$INTERFACE должен быть передан как второй позиционный аргумент"
+    echo "\$INTERFACE must be passed as second positional argument"
     exit 1
 elif [[ -z "$SUBNET" && -z "$HOST" ]]; then
 	for SUBNET in {0..255}
