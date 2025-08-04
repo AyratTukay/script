@@ -22,11 +22,7 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 [[ "$PREFIX" = "NOT_SET" ]] && { echo "\$PREFIX must be passed as first positional argument"; exit 1; }
-
-
-
-
-
+[[ "$PREFIX" =~ ^(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})"."(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})$ ]] || { echo "\$PREFIX in wrong range"; exit 1; }
 if [[ -z "$INTERFACE" ]]; then
     echo "\$INTERFACE must be passed as second positional argument"
     exit 1
@@ -36,7 +32,9 @@ elif [[ -z "$SUBNET" && -z "$HOST" ]]; then
 		checking_host
 	done
 elif [[ -z "$HOST" ]]; then
+	[[ "$SUBNET" =~ ^(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})$ ]] || { echo "\$SUBNET in wrong range"; exit 1; }
 	checking_host
 else 
+	[[ "$HOST" =~ ^(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})$ ]] || { echo "\$HOST in wrong range"; exit 1; }
 	arping_com
 fi
