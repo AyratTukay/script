@@ -4,21 +4,31 @@ INTERFACE="$2"
 SUBNET="$3"
 HOST="$4"
 
+arping_com() {
+	arping -c 3 -i "$INTERFACE" "$PREFIX"".""$SUBNET"".""${HOST}" 2> /dev/null
+}
+
 checking_host() {
 	for HOST in {0..255}
 		do
 			echo "[*] IP : ${PREFIX}.${SUBNET}.${HOST}"
-			arping -c 3 -i "$INTERFACE" "$PREFIX"".""$SUBNET"".""${HOST}" 2> /dev/null
+			arping_com
 		done
 }
 
+trap 'echo "Ping exit (Ctrl-C)"; exit 1' 2
 if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root"
    exit 1
 fi
-[[ "$PREFIX" = "NOT_SET" ]] && { echo "\$PREFIX должен быть передан как первый позиционный аргумент"; exit 1; }
+[[ "$PREFIX" = "NOT_SET" ]] && { echo "\$PREFIX must be passed as first positional argument"; exit 1; }
+
+
+
+
+
 if [[ -z "$INTERFACE" ]]; then
-    echo "\$INTERFACE должен быть передан как второй позиционный аргумент"
+    echo "\$INTERFACE must be passed as second positional argument"
     exit 1
 elif [[ -z "$SUBNET" && -z "$HOST" ]]; then
 	for SUBNET in {0..255}
@@ -28,5 +38,5 @@ elif [[ -z "$SUBNET" && -z "$HOST" ]]; then
 elif [[ -z "$HOST" ]]; then
 	checking_host
 else 
-	arping -c 3 -i "$INTERFACE" "$PREFIX"".""$SUBNET"".""${HOST}" 2> /dev/null
+	arping_com
 fi
