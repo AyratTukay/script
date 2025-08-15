@@ -1,0 +1,12 @@
+#!/bin/bash
+output_file="proc_direc.txt"
+exe_path="/proc/$pid/exe"
+echo > "$output_file" # Очистка файла перед записью
+
+find /proc -maxdepth 1 -type d -regex "/proc/[0-9]+" | while IFS= read -r dir; do
+  echo "$dir" >> "$output_file"
+  process_name=$(readlink "$dir"/exe)
+  echo $process_name >> "$output_file"
+done
+
+echo "Номерные директории /proc записаны в файл: $output_file"
